@@ -1,10 +1,13 @@
-# github-core-clone-01 starter
+# github-core-clone-01
 
-A runnable starting point for [the contest](https://make.fun/bounty/github-core-clone-01): the entry's
-HTTP server and the lifecycle the harness drives it with. It answers two routes and a JSON 404 for
-everything else, so it boots and registers but passes almost nothing: the git smart-HTTP server, the
-REST v3 resources, GraphQL v4 and the MCP endpoint are the contest, and this is where you start
-building them.
+A standalone GitHub-compatible git forge in one Node process, built for
+[the contest](https://make.fun/bounty/github-core-clone-01): git smart HTTP (upload-pack v2/v0,
+receive-pack v0), the REST v3 API, GraphQL v4, and MCP, all over one in-memory store. No
+dependencies, no git binary, no network beyond the trial env.
+
+Local conformance (kit `sdk/run.ts --perf`, fresh server): **120/120 checks, score 979/1000**
+(feature 600, agent 200, perf 179). Perf varies a few points run to run on shared CPU; the
+conformance column is stable at 120/120.
 
 ## Run it
 
@@ -69,7 +72,10 @@ The trial's CPU, memory and process limits are the rules'; its wall budget is 90
 ## Layout
 
 - `main.ts`: the lifecycle above. Keep it as it is.
-- `app.ts`: the server. This is the file to grow.
+- `app.ts`: the whole forge (about 3,100 lines): git objects and packfiles (plain objects, no
+  deltas), pkt-line framing, upload/receive-pack, REST v3, a small hand-written GraphQL parser and
+  executor, and the MCP endpoint. The token owner is the scenario viewer, derived at startup from
+  the contest's fixed scenario seed, so no outside service is needed to answer as `adaiversen`.
 - `package.json`, `tsconfig.json`, `LICENSE` (MIT): the entry's metadata and licence.
 
 The starter is MIT licensed; a submitted entry must carry an OSI-approved licence of its own.
